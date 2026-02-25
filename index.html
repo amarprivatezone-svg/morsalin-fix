@@ -3,170 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Morsalin Fix - Shop Manager</title>
+    <title>Morsalin Fix - Official Shop & Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
-        :root { --primary: #1a73e8; --secondary: #fbbc05; --danger: #ea4335; --success: #34a853; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; margin: 0; padding: 10px; color: #333; }
-        .container { max-width: 900px; margin: auto; background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        
-        /* Header Section */
-        header { text-align: center; border-bottom: 3px solid var(--primary); margin-bottom: 25px; padding-bottom: 10px; }
-        header h1 { margin: 0; color: var(--primary); font-size: 28px; letter-spacing: 1px; }
-        header p { margin: 5px 0; color: #666; font-weight: bold; }
-
-        /* Input Form */
-        .form-section { background: #f1f3f4; padding: 20px; border-radius: 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 30px; }
-        input, select { padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; outline: none; }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 5px rgba(26,115,232,0.3); }
-        .btn-add { background: var(--success); color: white; border: none; font-weight: bold; cursor: pointer; border-radius: 8px; transition: 0.3s; }
-        .btn-add:hover { background: #2d8a45; transform: scale(1.02); }
-
-        /* Filters */
-        .filter-container { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 15px; margin-bottom: 15px; border-bottom: 1px solid #eee; }
-        .filter-btn { white-space: nowrap; padding: 8px 16px; border: 1px solid var(--primary); border-radius: 20px; background: none; color: var(--primary); cursor: pointer; font-size: 13px; font-weight: 500; }
-        .filter-btn.active { background: var(--primary); color: white; }
-
-        /* Table */
-        .table-wrapper { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th { background: #f1f3f4; color: #555; padding: 15px 10px; text-align: left; font-size: 14px; border-bottom: 2px solid #ddd; }
-        td { padding: 15px 10px; border-bottom: 1px solid #eee; font-size: 15px; }
-        .brand-tag { background: #e8f0fe; color: var(--primary); padding: 4px 8px; border-radius: 5px; font-weight: bold; font-size: 12px; }
-        .qty-badge { background: var(--secondary); color: #000; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
-        .sell-btn { background: var(--danger); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; }
-        .sell-btn:hover { opacity: 0.8; }
-        
-        .empty-state { text-align: center; padding: 40px; color: #999; }
+        :root { --pink: #ff1493; --gold: #ffd700; --dark: #0f0f1f; --success: #28a745; --blue: #00e5ff; }
+        body { font-family: 'Hind Siliguri', sans-serif; background: var(--dark); margin: 0; color: #fff; overflow-x: hidden; padding-bottom: 50px; }
+        .header { text-align: center; padding: 30px 20px; background: linear-gradient(135deg, #1a1a2e, #000); border-bottom: 3px solid var(--pink); position: relative; }
+        .brand-name { font-size: 38px; font-weight: 900; color: var(--pink); text-transform: uppercase; text-shadow: 0 0 20px var(--pink); cursor: pointer; margin-bottom: 5px; }
+        .contact-box { margin-top: 10px; border: 1px dashed #444; padding: 10px; border-radius: 10px; display: inline-block; background: rgba(255,255,255,0.05); }
+        .num-1 { color: var(--gold); font-weight: bold; font-size: 18px; text-decoration: none; }
+        .num-2 { color: var(--blue); font-weight: bold; font-size: 18px; text-decoration: none; }
+        .address { color: #00ff88; font-size: 14px; margin-top: 8px; font-weight: bold; }
+        .wheel-box { position: relative; width: 300px; height: 300px; margin: 20px auto; border: 8px solid #333; border-radius: 50%; box-shadow: 0 0 30px var(--pink); background: #222; overflow: hidden; }
+        .wheel-svg { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1); }
+        .pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 40px; z-index: 100; }
+        .spin-btn { width: 100%; background: linear-gradient(45deg, var(--pink), #ff69b4); color: #fff; border: none; padding: 15px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>🛠️ Morsalin Fix</h1>
-        <p>মোবাইল রিপেয়ারিং ও পার্টস ইনভেন্টরি</p>
-    </header>
-
-    <div class="form-section">
-        <select id="brand">
-            <option value="Xiaomi">Xiaomi/Redmi</option>
-            <option value="Samsung">Samsung</option>
-            <option value="Vivo">Vivo</option>
-            <option value="Poco">Poco</option>
-            <option value="Infinix">Infinix</option>
-            <option value="Oppo">Oppo</option>
-            <option value="Itel">Itel</option>
-            <option value="Other">Other Models</option>
-        </select>
-        <input type="text" id="model" placeholder="মডেল (যেমন: Note 11)">
-        <select id="part">
-            <option value="Display">Display</option>
-            <option value="Battery">Battery</option>
-            <option value="Charging Board">Charging Board</option>
-            <option value="Backshell">Backshell</option>
-            <option value="OCA Glass">OCA Glass</option>
-            <option value="Pin/Switch">Pin & Switch</option>
-        </select>
-        <input type="number" id="price" placeholder="দাম (৳)">
-        <input type="number" id="qty" placeholder="পরিমাণ">
-        <button class="btn-add" onclick="saveData()">পণ্য যোগ করুন</button>
-    </div>
-
-    <div class="filter-container">
-        <button class="filter-btn active" onclick="render('All')">All Items</button>
-        <button class="filter-btn" onclick="render('Xiaomi')">Xiaomi</button>
-        <button class="filter-btn" onclick="render('Samsung')">Samsung</button>
-        <button class="filter-btn" onclick="render('Vivo')">Vivo</button>
-        <button class="filter-btn" onclick="render('Infinix')">Infinix</button>
-        <button class="filter-btn" onclick="render('Other')">Others</button>
-    </div>
-
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>ব্র্যান্ড</th>
-                    <th>মডেল ও পার্টস</th>
-                    <th>দাম (৳)</th>
-                    <th>স্টক</th>
-                    <th>অ্যাকশন</th>
-                </tr>
-            </thead>
-            <tbody id="listBody"></tbody>
-        </table>
-        <div id="noItem" class="empty-state" style="display: none;">কোনো পণ্য পাওয়া যায়নি।</div>
+<div class="header">
+    <div class="brand-name">Morsalin Fix</div>
+    <div class="contact-box">
+        📞 <a href="tel:01617511388" class="num-1">01617511388</a> | <a href="tel:01521713332" class="num-2">01521713332</a>
+        <div class="address">📍 দত্তবাড়ি রোড, হরিণা পিপুল বাড়িয়া বাজার, বাগবাটি, সিরাজগঞ্জ।</div>
     </div>
 </div>
 
+<div style="max-width:600px; margin:auto; padding:15px; text-align:center;">
+    <h3 style="color:var(--pink);">🎯 লাকি স্পিন (উপহার জিতুন)</h3>
+    <div class="wheel-box">
+        <img src="https://i.ibb.co/3M8t8zC/pointer.png" class="pointer">
+        <svg class="wheel-svg" id="wheel" viewBox="0 0 100 100">
+            <path d="M50,50 L50,0 A50,50 0 0,1 93.3,25 Z" fill="#ff1493"/><text x="65" y="20" fill="#fff" font-size="3" transform="rotate(30,50,50)">5 Coin</text>
+            <path d="M50,50 L93.3,25 A50,50 0 0,1 93.3,75 Z" fill="#222"/><text x="60" y="20" fill="#00e5ff" font-size="3" font-weight="bold" transform="rotate(90,50,50)">🎧 Earphone</text>
+            <path d="M50,50 L93.3,75 A50,50 0 0,1 50,100 Z" fill="#ff1493"/><text x="60" y="20" fill="#ffd700" font-size="3" font-weight="bold" transform="rotate(150,50,50)">💎 OG Glass</text>
+            <path d="M50,50 L50,100 A50,50 0 0,1 6.7,75 Z" fill="#222"/><text x="65" y="20" fill="#fff" font-size="3" transform="rotate(210,50,50)">20 Coin</text>
+            <path d="M50,50 L6.7,75 A50,50 0 0,1 6.7,25 Z" fill="#ff1493"/><text x="60" y="20" fill="#fff" font-size="3" transform="rotate(270,50,50)">⌚ Watch</text>
+            <path d="M50,50 L6.7,25 A50,50 0 0,1 50,0 Z" fill="#222"/><text x="65" y="20" fill="#fff" font-size="3" transform="rotate(330,50,50)">10 Coin</text>
+        </svg>
+    </div>
+    <button class="spin-btn" id="spinBtn" onclick="playSpin()">স্পিন করুন 🎲</button>
+</div>
+
 <script>
-    let db = JSON.parse(localStorage.getItem('morsalinFixDB')) || [];
-
-    function saveData() {
-        const brand = document.getElementById('brand').value;
-        const model = document.getElementById('model').value;
-        const part = document.getElementById('part').value;
-        const price = document.getElementById('price').value;
-        const qty = document.getElementById('qty').value;
-
-        if(!model || !price || !qty) {
-            alert("দয়া করে সঠিক তথ্য দিন!");
-            return;
-        }
-
-        const newItem = { id: Date.now(), brand, model, part, price, qty };
-        db.push(newItem);
-        localStorage.setItem('morsalinFixDB', JSON.stringify(db));
-        
-        // Clear inputs
-        document.getElementById('model').value = '';
-        document.getElementById('price').value = '';
-        document.getElementById('qty').value = '';
-        
-        render();
+    function playSpin() {
+        const btn = document.getElementById('spinBtn');
+        const wheel = document.getElementById('wheel');
+        btn.disabled = true;
+        const rotate = 3600 + Math.floor(Math.random() * 3600);
+        wheel.style.transform = `rotate(${rotate}deg)`;
+        setTimeout(() => {
+            const actualDegree = rotate % 360;
+            let prize = (actualDegree >= 60 && actualDegree < 120) ? "Earphone" : (actualDegree >= 120 && actualDegree < 180) ? "OG Glass" : "Coins";
+            if(prize !== "Coins") {
+                confetti({particleCount: 200, spread: 70, origin: { y: 0.6 }});
+                alert(`🔥 অভিনন্দন! আপনি একটি ${prize} জিতেছেন!`);
+            } else { alert("আপনি কয়েন জিতেছেন!"); }
+            btn.disabled = false;
+        }, 4000);
     }
-
-    function deleteItem(id) {
-        if(confirm("আপনি কি এই পণ্যটি বিক্রি বা রিমুভ করতে চান?")) {
-            db = db.filter(item => item.id !== id);
-            localStorage.setItem('morsalinFixDB', JSON.stringify(db));
-            render();
-        }
-    }
-
-    function render(filter = 'All') {
-        const listBody = document.getElementById('listBody');
-        const noItem = document.getElementById('noItem');
-        listBody.innerHTML = '';
-        
-        let filteredData = filter === 'All' ? db : db.filter(i => i.brand === filter);
-
-        // Filter button active state
-        const btns = document.querySelectorAll('.filter-btn');
-        btns.forEach(b => {
-            b.classList.remove('active');
-            if(b.innerText.includes(filter)) b.classList.add('active');
-        });
-
-        if(filteredData.length === 0) {
-            noItem.style.display = 'block';
-        } else {
-            noItem.style.display = 'none';
-            filteredData.forEach(item => {
-                listBody.innerHTML += `
-                    <tr>
-                        <td><span class="brand-tag">${item.brand}</span></td>
-                        <td><strong>${item.model}</strong><br><small style="color:#666">${item.part}</small></td>
-                        <td>৳${item.price}</td>
-                        <td><span class="qty-badge">${item.qty} টি</span></td>
-                        <td><button class="sell-btn" onclick="deleteItem(${item.id})">বিক্রি</button></td>
-                    </tr>
-                `;
-            });
-        }
-    }
-
-    render();
 </script>
-
 </body>
 </html>
