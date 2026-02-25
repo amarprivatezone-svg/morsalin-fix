@@ -3,209 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Morsalin Fix - Pro Shop Manager</title>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <title>Morsalin Fix - Mobile Parts Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --pink: #ff1493; --gold: #ffd700; --dark: #0f0f1f; --success: #28a745; --blue: #00e5ff; --red: #ff4d4d; }
-        body { font-family: 'Hind Siliguri', sans-serif; background: var(--dark); margin: 0; color: #fff; padding-bottom: 50px; }
+        :root { --primary: #e91e63; --dark: #121212; --card-bg: #ffffff; }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f4f7f6; margin: 0; color: #333; }
         
-        /* Student Promo Modal */
-        #studentPromo { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 15000; align-items: center; justify-content: center; }
-        .promo-card { background: #fff; color: #333; padding: 25px; border-radius: 20px; width: 85%; max-width: 350px; text-align: center; border: 4px solid var(--pink); }
+        /* Header & Search */
+        .top-header { background: #fff; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 22px; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .search-container { padding: 10px; background: #fff; }
+        .search-box { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box; }
 
-        .header { text-align: center; padding: 25px; background: #1a1a2e; border-bottom: 3px solid var(--pink); }
-        .brand-name { font-size: 32px; font-weight: 900; color: var(--pink); cursor: pointer; text-transform: uppercase; }
-        .contact-box { margin-top: 10px; border: 1px dashed #444; padding: 10px; border-radius: 10px; display: inline-block; font-size: 14px; }
-        .coin-status { color: var(--gold); font-weight: bold; margin-top: 10px; display: block; background: rgba(255,215,0,0.1); padding: 5px; border-radius: 5px; }
-        
-        #adminArea { display: none; background: #fff; color: #000; padding: 20px; border-radius: 15px; margin: 15px; border: 3px solid var(--pink); }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #ccc; font-family: 'Hind Siliguri'; }
-        
-        /* Wheel CSS */
-        .wheel-container { position: relative; width: 280px; height: 280px; margin: 20px auto; }
-        .wheel-box { width: 100%; height: 100%; border: 8px solid #333; border-radius: 50%; box-shadow: 0 0 25px var(--pink); background: #222; overflow: hidden; position: relative; }
-        .wheel-svg { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1); }
-        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 40px; z-index: 100; }
-        
-        .spin-btn { width: 100%; background: linear-gradient(45deg, var(--pink), #ff69b4); color: #fff; border: none; padding: 15px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .spin-btn:disabled { background: #444; cursor: not-allowed; }
+        /* Banner Slider */
+        .banner { width: 100%; height: 180px; background: linear-gradient(45deg, #e91e63, #ff4081); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; text-align: center; padding: 20px; box-sizing: border-box; }
 
-        .item-card { background: #1a1a2e; border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; }
-        .sold-out-badge { background: var(--red); color: white; padding: 2px 8px; border-radius: 5px; font-size: 12px; font-weight: bold; margin-top: 5px; display: inline-block; }
-        .sold-out-card { opacity: 0.5; filter: grayscale(1); }
-        .price { color: #ff5252; font-size: 18px; font-weight: bold; }
-        .del-btn { background: none; border: none; color: var(--red); font-size: 18px; cursor: pointer; }
+        /* Categories */
+        .cat-section { padding: 15px; }
+        .brand-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+        .brand-btn { background: #fff; border: 1px solid #ddd; padding: 10px 5px; border-radius: 5px; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; text-transform: uppercase; }
+        .brand-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+        /* Product Grid */
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
+        .product-card { background: #fff; border-radius: 10px; padding: 10px; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: center; }
+        .discount-tag { position: absolute; top: 5px; left: 5px; background: red; color: #fff; padding: 2px 6px; border-radius: 50%; font-size: 10px; font-weight: bold; }
+        .product-img { width: 100%; height: 120px; object-fit: contain; margin-bottom: 10px; }
+        .product-title { font-size: 13px; font-weight: 600; margin: 5px 0; height: 36px; overflow: hidden; }
+        .price { color: var(--primary); font-size: 16px; font-weight: 700; }
+        .old-price { text-decoration: line-through; color: #888; font-size: 12px; margin-left: 5px; }
+        .buy-btn { width: 100%; background: var(--primary); color: #fff; border: none; padding: 8px; border-radius: 5px; margin-top: 10px; font-weight: bold; cursor: pointer; }
+
+        /* Admin Section */
+        #adminArea { display: none; background: #fff; padding: 20px; margin: 15px; border-radius: 10px; border: 2px solid var(--primary); }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
-<div id="studentPromo">
-    <div class="promo-card">
-        <span style="font-size:50px;">🕌 🎓</span>
-        <h2 style="color:#d32f2f">বিশেষ ছাত্র অফার!</h2>
-        <p>মাদরাসা ও স্কুলের ছাত্রদের জন্য বিশেষ মূল্যছাড়! (আইডি কার্ড লাগবে)</p>
-        <button class="spin-btn" onclick="closePromo()">ঠিক আছে ✅</button>
+<div class="top-header">
+    <a href="#" class="logo" onclick="openAdmin()">Morsalin Fix</a>
+    <div>
+        <i class="fa fa-shopping-basket" style="font-size: 20px;"></i>
+        <span id="cartCount" style="background: red; color: #fff; padding: 2px 6px; border-radius: 50%; font-size: 10px;">0</span>
     </div>
 </div>
 
-<div class="header">
-    <div class="brand-name" onclick="openAdmin()">Morsalin Fix</div>
-    <div class="contact-box">
-        📞 <span style="color:var(--gold)">01617511388</span> | <span style="color:var(--blue)">01521713332</span><br>
-        📍 দত্তবাড়ি রোড, হরিণা পিপুল বাড়িয়া বাজার, সিরাজগঞ্জ।
-    </div>
-    <span class="coin-status">🪙 জমানো কয়েন: <span id="coinBalance">0</span></span>
+<div class="search-container">
+    <input type="text" class="search-box" placeholder="আপনার পার্টস খুঁজুন (ডিসপ্লে, ব্যাটারি...)" onkeyup="searchProduct()">
 </div>
 
-<div style="max-width:600px; margin:auto; padding:15px;">
-    
-    <div id="adminArea">
-        <h3>🛠️ অ্যাডমিন প্যানেল</h3>
-        <input type="text" id="model" placeholder="মডেলের নাম">
-        <input type="number" id="price" placeholder="দাম">
-        <select id="category">
-            <option value="Display">ডিসপ্লে (Display)</option>
-            <option value="Battery">ব্যাটারি (Battery)</option>
-            <option value="Glass">ওজি গ্লাস (OG Glass)</option>
-            <option value="Logic">চার্জিং লজিক (Logic)</option>
-            <option value="Button">বাটন ফোন পার্টস</option>
-        </select>
-        <label><input type="checkbox" id="isSoldOut"> এটি কি Sold Out?</label>
-        <button class="spin-btn" style="background:var(--success)" onclick="addProduct()">লিস্টে সেভ করুন ✅</button>
-        <button onclick="document.getElementById('adminArea').style.display='none'" style="width:100%; border:none; margin-top:10px; padding:10px;">বন্ধ করুন</button>
+<div class="banner">
+    <div>
+        <strong>৩০% মেগা ডিসকাউন্ট চলছে!</strong><br>
+        <small>অরিজিনাল মোবাইল পার্টসের বিশ্বস্ত দোকান</small>
     </div>
-
-    <h3 style="color:var(--pink); border-left:4px solid var(--pink); padding-left:10px;">🎯 লাকি স্পিন (২৪ ঘণ্টায় ১ বার)</h3>
-    <div class="wheel-container">
-        <img src="https://i.ibb.co/3M8t8zC/pointer.png" class="pointer">
-        <div class="wheel-box">
-            <svg class="wheel-svg" id="wheel" viewBox="0 0 100 100">
-                <path d="M50,50 L50,0 A50,50 0 0,1 93.3,25 Z" fill="#ff1493"/><text x="62" y="22" fill="#fff" font-size="3.5" font-weight="bold" transform="rotate(30,50,50)">5 Coin</text>
-                <path d="M50,50 L93.3,25 A50,50 0 0,1 93.3,75 Z" fill="#222"/><text x="60" y="22" fill="#00e5ff" font-size="3" font-weight="bold" transform="rotate(90,50,50)">Earphone</text>
-                <path d="M50,50 L93.3,75 A50,50 0 0,1 50,100 Z" fill="#ff1493"/><text x="60" y="22" fill="#ffd700" font-size="3" font-weight="bold" transform="rotate(150,50,50)">OG Glass</text>
-                <path d="M50,50 L50,100 A50,50 0 0,1 6.7,75 Z" fill="#222"/><text x="62" y="22" fill="#fff" font-size="3.5" font-weight="bold" transform="rotate(210,50,50)">20 Coin</text>
-                <path d="M50,50 L6.7,75 A50,50 0 0,1 6.7,25 Z" fill="#ff1493"/><text x="60" y="22" fill="#fff" font-size="3.5" font-weight="bold" transform="rotate(270,50,50)">Watch</text>
-                <path d="M50,50 L6.7,25 A50,50 0 0,1 50,0 Z" fill="#222"/><text x="62" y="22" fill="#fff" font-size="3.5" font-weight="bold" transform="rotate(330,50,50)">10 Coin</text>
-            </svg>
-        </div>
-    </div>
-    <button class="spin-btn" id="spinBtn" onclick="playSpin()">স্পিন করুন 🎲</button>
-    <p id="timerMsg" style="text-align:center; color:var(--gold); display:none; margin-top:10px;"></p>
-
-    <h3 style="color:var(--pink); border-left:4px solid var(--pink); padding-left:10px; margin-top:30px;">🛍️ স্টক লিস্ট</h3>
-    <div id="productList"></div>
 </div>
+
+<div class="cat-section">
+    <strong>স্মার্টফোন ব্র্যান্ড কালেকশন</strong>
+    <div class="brand-btns">
+        <div class="brand-btn active">ALL</div>
+        <div class="brand-btn">IPHONE</div>
+        <div class="brand-btn">SAMSUNG</div>
+        <div class="brand-btn">VIVO</div>
+    </div>
+</div>
+
+<div id="adminArea">
+    <h3>🛠️ প্রোডাক্ট যোগ করুন</h3>
+    <input type="text" id="pName" placeholder="মডেলের নাম (যেমন: Samsung A50)">
+    <input type="number" id="pPrice" placeholder="বর্তমান দাম">
+    <input type="number" id="pOldPrice" placeholder="পুরনো দাম (ঐচ্ছিক)">
+    <input type="text" id="pImg" placeholder="ছবির লিঙ্ক (Image URL)">
+    <select id="pCat">
+        <option value="Display">Display</option>
+        <option value="Battery">Battery</option>
+        <option value="Backshell">Backshell</option>
+    </select>
+    <button class="buy-btn" onclick="saveProduct()">সেভ করুন ✅</button>
+    <button onclick="document.getElementById('adminArea').style.display='none'" style="width:100%; margin-top:10px; border:none; background:#eee; padding:10px;">বন্ধ করুন</button>
+</div>
+
+<div class="product-grid" id="productArea">
+    </div>
 
 <script>
     const ADMIN_PASS = "Noman@31hridoy";
-    let userCoins = parseInt(localStorage.getItem('m_coins')) || 0;
-    let stock = JSON.parse(localStorage.getItem('m_stock_v3')) || [];
+    let products = JSON.parse(localStorage.getItem('m_fix_store')) || [];
 
-    window.onload = function() {
-        document.getElementById('coinBalance').innerText = userCoins;
-        renderProducts();
-        checkCooldown();
-        setTimeout(() => { document.getElementById('studentPromo').style.display = 'flex'; }, 1500);
-    };
-
-    function closePromo() { document.getElementById('studentPromo').style.display = 'none'; }
+    window.onload = renderProducts;
 
     function openAdmin() {
-        if(prompt("পাসওয়ার্ড দিন:") === ADMIN_PASS) {
+        if(prompt("অ্যাডমিন পাসওয়ার্ড দিন:") === ADMIN_PASS) {
             document.getElementById('adminArea').style.display = 'block';
         }
     }
 
-    function checkCooldown() {
-        const lastSpin = localStorage.getItem('last_spin_time');
-        if (lastSpin && (Date.now() - lastSpin < 86400000)) {
-            const btn = document.getElementById('spinBtn');
-            btn.disabled = true;
-            btn.innerText = "আগামীকাল আবার খেলুন";
-            document.getElementById('timerMsg').style.display = 'block';
-            document.getElementById('timerMsg').innerText = "একবার খেলা হয়েছে, ২৪ ঘণ্টা পর আবার সুযোগ পাবেন।";
-        }
-    }
+    function saveProduct() {
+        const name = document.getElementById('pName').value;
+        const price = document.getElementById('pPrice').value;
+        const oldPrice = document.getElementById('pOldPrice').value;
+        const img = document.getElementById('pImg').value || "https://via.placeholder.com/150";
+        const cat = document.getElementById('pCat').value;
 
-    function playSpin() {
-        const wheel = document.getElementById('wheel');
-        const btn = document.getElementById('spinBtn');
-        btn.disabled = true;
+        if(!name || !price) return alert("তথ্য দিন!");
 
-        // 95% Coins, 5% Gifts Probability
-        const rand = Math.random();
-        let targetDeg;
-        if (rand < 0.95) {
-            const coinSectors = [30, 210, 330]; 
-            targetDeg = coinSectors[Math.floor(Math.random() * coinSectors.length)];
-        } else {
-            const giftSectors = [90, 150, 270]; 
-            targetDeg = giftSectors[Math.floor(Math.random() * giftSectors.length)];
-        }
-
-        const finalRotate = 3600 + (360 - targetDeg);
-        wheel.style.transform = `rotate(${finalRotate}deg)`;
-
-        setTimeout(() => {
-            let winText = "";
-            if(targetDeg === 30) { userCoins += 5; winText = "৫ কয়েন"; }
-            else if(targetDeg === 90) winText = "১টি Earphone";
-            else if(targetDeg === 150) winText = "১টি OG Glass";
-            else if(targetDeg === 210) { userCoins += 20; winText = "২০ কয়েন"; }
-            else if(targetDeg === 270) winText = "১টি Smart Watch";
-            else if(targetDeg === 330) { userCoins += 10; winText = "১০ কয়েন"; }
-
-            localStorage.setItem('m_coins', userCoins);
-            document.getElementById('coinBalance').innerText = userCoins;
-            localStorage.setItem('last_spin_time', Date.now());
-            
-            confetti({particleCount: 150, spread: 70, origin: { y: 0.6 }});
-            alert("অভিনন্দন! আপনি জিতেছেন: " + winText);
-            checkCooldown();
-        }, 4000);
-    }
-
-    function addProduct() {
-        const model = document.getElementById('model').value;
-        const price = document.getElementById('price').value;
-        const cat = document.getElementById('category').value;
-        const soldOut = document.getElementById('isSoldOut').checked;
-        if(!model || !price) return alert("তথ্য দিন");
-
-        stock.push({ id: Date.now(), model, price, cat, soldOut });
-        localStorage.setItem('m_stock_v3', JSON.stringify(stock));
+        products.push({ id: Date.now(), name, price, oldPrice, img, cat });
+        localStorage.setItem('m_fix_store', JSON.stringify(products));
         renderProducts();
-        document.getElementById('model').value = "";
-        document.getElementById('price').value = "";
-        document.getElementById('isSoldOut').checked = false;
-    }
-
-    function deleteProduct(id) {
-        if(confirm("ডিলিট করবেন?")) {
-            stock = stock.filter(i => i.id !== id);
-            localStorage.setItem('m_stock_v3', JSON.stringify(stock));
-            renderProducts();
-        }
+        document.getElementById('adminArea').style.display = 'none';
     }
 
     function renderProducts() {
-        const area = document.getElementById('productList');
-        area.innerHTML = stock.length === 0 ? "<p>স্টক খালি।</p>" : "";
-        stock.forEach(p => {
+        const area = document.getElementById('productArea');
+        area.innerHTML = "";
+        products.forEach(p => {
+            let discount = p.oldPrice ? Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100) : 0;
             area.innerHTML += `
-                <div class="item-card ${p.soldOut ? 'sold-out-card' : ''}">
-                    <div>
-                        <b>${p.model}</b><br><small style="color:var(--blue)">${p.cat}</small><br>
-                        ${p.soldOut ? '<span class="sold-out-badge">SOLD OUT</span>' : ''}
-                    </div>
-                    <div style="text-align:right">
-                        <span class="price">৳${p.price}</span><br>
-                        <button class="del-btn" onclick="deleteProduct(${p.id})">🗑️</button>
-                    </div>
-                </div>`;
+                <div class="product-card">
+                    ${discount > 0 ? `<span class="discount-tag">-${discount}%</span>` : ''}
+                    <img src="${p.img}" class="product-img">
+                    <div class="product-title">${p.name} - ${p.cat}</div>
+                    <span class="price">৳${p.price}</span>
+                    ${p.oldPrice ? `<span class="old-price">৳${p.oldPrice}</span>` : ''}
+                    <button class="buy-btn" onclick="alert('WhatsApp-এ অর্ডার করতে ক্লিক করুন')">অর্ডার করুন</button>
+                    <button onclick="deleteProduct(${p.id})" style="border:none; color:red; background:none; font-size:12px; margin-top:5px;">মুছে ফেলুন</button>
+                </div>
+            `;
         });
     }
+
+    function deleteProduct(id) {
+        if(confirm("মুছে ফেলবেন?")) {
+            products = products.filter(p => p.id !== id);
+            localStorage.setItem('m_fix_store', JSON.stringify(products));
+            renderProducts();
+        }
+    }
 </script>
+
 </body>
 </html>
