@@ -3,66 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Morsalin Fix - Official Shop & Game</title>
+    <title>Morsalin Fix - Pro Shop Manager</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
-        :root { --pink: #ff1493; --gold: #ffd700; --dark: #0f0f1f; --success: #28a745; --blue: #00e5ff; }
-        body { font-family: 'Hind Siliguri', sans-serif; background: var(--dark); margin: 0; color: #fff; overflow-x: hidden; padding-bottom: 50px; }
-        .header { text-align: center; padding: 30px 20px; background: linear-gradient(135deg, #1a1a2e, #000); border-bottom: 3px solid var(--pink); position: relative; }
-        .brand-name { font-size: 38px; font-weight: 900; color: var(--pink); text-transform: uppercase; text-shadow: 0 0 20px var(--pink); cursor: pointer; margin-bottom: 5px; }
-        .contact-box { margin-top: 10px; border: 1px dashed #444; padding: 10px; border-radius: 10px; display: inline-block; background: rgba(255,255,255,0.05); }
-        .num-1 { color: var(--gold); font-weight: bold; font-size: 18px; text-decoration: none; }
-        .num-2 { color: var(--blue); font-weight: bold; font-size: 18px; text-decoration: none; }
-        .address { color: #00ff88; font-size: 14px; margin-top: 8px; font-weight: bold; }
-        .wheel-box { position: relative; width: 300px; height: 300px; margin: 20px auto; border: 8px solid #333; border-radius: 50%; box-shadow: 0 0 30px var(--pink); background: #222; overflow: hidden; }
+        :root { --pink: #ff1493; --gold: #ffd700; --dark: #0f0f1f; --success: #28a745; --blue: #00e5ff; --red: #ff4d4d; }
+        body { font-family: 'Hind Siliguri', sans-serif; background: var(--dark); margin: 0; color: #fff; padding-bottom: 50px; }
+        
+        /* Student Promo Modal */
+        #studentPromo { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 15000; align-items: center; justify-content: center; }
+        .promo-card { background: #fff; color: #333; padding: 25px; border-radius: 20px; width: 85%; max-width: 350px; text-align: center; border: 4px solid var(--pink); }
+
+        .header { text-align: center; padding: 25px; background: #1a1a2e; border-bottom: 3px solid var(--pink); }
+        .brand-name { font-size: 32px; font-weight: 900; color: var(--pink); cursor: pointer; text-transform: uppercase; }
+        .contact-box { margin-top: 10px; border: 1px dashed #444; padding: 10px; border-radius: 10px; display: inline-block; font-size: 14px; }
+        .coin-status { color: var(--gold); font-weight: bold; margin-top: 10px; display: block; background: rgba(255,215,0,0.1); padding: 5px; border-radius: 5px; }
+        
+        #adminArea { display: none; background: #fff; color: #000; padding: 20px; border-radius: 15px; margin: 15px; border: 3px solid var(--pink); }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #ccc; font-family: 'Hind Siliguri'; }
+        
+        /* Wheel CSS */
+        .wheel-container { position: relative; width: 280px; height: 280px; margin: 20px auto; }
+        .wheel-box { width: 100%; height: 100%; border: 8px solid #333; border-radius: 50%; box-shadow: 0 0 25px var(--pink); background: #222; overflow: hidden; position: relative; }
         .wheel-svg { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1); }
-        .pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 40px; z-index: 100; }
-        .spin-btn { width: 100%; background: linear-gradient(45deg, var(--pink), #ff69b4); color: #fff; border: none; padding: 15px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 40px; z-index: 100; }
+        
+        .spin-btn { width: 100%; background: linear-gradient(45deg, var(--pink), #ff69b4); color: #fff; border: none; padding: 15px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .spin-btn:disabled { background: #444; cursor: not-allowed; }
+
+        .item-card { background: #1a1a2e; border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; }
+        .sold-out-badge { background: var(--red); color: white; padding: 2px 8px; border-radius: 5px; font-size: 12px; font-weight: bold; margin-top: 5px; display: inline-block; }
+        .sold-out-card { opacity: 0.5; filter: grayscale(1); }
+        .price { color: #ff5252; font-size: 18px; font-weight: bold; }
+        .del-btn { background: none; border: none; color: var(--red); font-size: 18px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <div class="brand-name">Morsalin Fix</div>
-    <div class="contact-box">
-        📞 <a href="tel:01617511388" class="num-1">01617511388</a> | <a href="tel:01521713332" class="num-2">01521713332</a>
-        <div class="address">📍 দত্তবাড়ি রোড, হরিণা পিপুল বাড়িয়া বাজার, বাগবাটি, সিরাজগঞ্জ।</div>
+<div id="studentPromo">
+    <div class="promo-card">
+        <span style="font-size:50px;">🕌 🎓</span>
+        <h2 style="color:#d32f2f">বিশেষ ছাত্র অফার!</h2>
+        <p>মাদরাসা ও স্কুলের ছাত্রদের জন্য বিশেষ মূল্যছাড়! (আইডি কার্ড লাগবে)</p>
+        <button class="spin-btn" onclick="closePromo()">ঠিক আছে ✅</button>
     </div>
 </div>
 
-<div style="max-width:600px; margin:auto; padding:15px; text-align:center;">
-    <h3 style="color:var(--pink);">🎯 লাকি স্পিন (উপহার জিতুন)</h3>
-    <div class="wheel-box">
+<div class="header">
+    <div class="brand-name" onclick="openAdmin()">Morsalin Fix</div>
+    <div class="contact-box">
+        📞 <span style="color:var(--gold)">01617511388</span> | <span style="color:var(--blue)">01521713332</span><br>
+        📍 দত্তবাড়ি রোড, হরিণা পিপুল বাড়িয়া বাজার, সিরাজগঞ্জ।
+    </div>
+    <span class="coin-status">🪙 জমানো কয়েন: <span id="coinBalance">0</span></span>
+</div>
+
+<div style="max-width:600px; margin:auto; padding:15px;">
+    
+    <div id="adminArea">
+        <h3>🛠️ অ্যাডমিন প্যানেল</h3>
+        <input type="text" id="model" placeholder="মডেলের নাম">
+        <input type="number" id="price" placeholder="দাম">
+        <select id="category">
+            <option value="Display">ডিসপ্লে (Display)</option>
+            <option value="Battery">ব্যাটারি (Battery)</option>
+            <option value="Glass">ওজি গ্লাস (OG Glass)</option>
+            <option value="Logic">চার্জিং লজিক (Logic)</option>
+            <option value="Button">বাটন ফোন পার্টস</option>
+        </select>
+        <label><input type="checkbox" id="isSoldOut"> এটি কি Sold Out?</label>
+        <button class="spin-btn" style="background:var(--success)" onclick="addProduct()">লিস্টে সেভ করুন ✅</button>
+        <button onclick="document.getElementById('adminArea').style.display='none'" style="width:100%; border:none; margin-top:10px; padding:10px;">বন্ধ করুন</button>
+    </div>
+
+    <h3 style="color:var(--pink); border-left:4px solid var(--pink); padding-left:10px;">🎯 লাকি স্পিন (২৪ ঘণ্টায় ১ বার)</h3>
+    <div class="wheel-container">
         <img src="https://i.ibb.co/3M8t8zC/pointer.png" class="pointer">
-        <svg class="wheel-svg" id="wheel" viewBox="0 0 100 100">
-            <path d="M50,50 L50,0 A50,50 0 0,1 93.3,25 Z" fill="#ff1493"/><text x="65" y="20" fill="#fff" font-size="3" transform="rotate(30,50,50)">5 Coin</text>
-            <path d="M50,50 L93.3,25 A50,50 0 0,1 93.3,75 Z" fill="#222"/><text x="60" y="20" fill="#00e5ff" font-size="3" font-weight="bold" transform="rotate(90,50,50)">🎧 Earphone</text>
-            <path d="M50,50 L93.3,75 A50,50 0 0,1 50,100 Z" fill="#ff1493"/><text x="60" y="20" fill="#ffd700" font-size="3" font-weight="bold" transform="rotate(150,50,50)">💎 OG Glass</text>
-            <path d="M50,50 L50,100 A50,50 0 0,1 6.7,75 Z" fill="#222"/><text x="65" y="20" fill="#fff" font-size="3" transform="rotate(210,50,50)">20 Coin</text>
-            <path d="M50,50 L6.7,75 A50,50 0 0,1 6.7,25 Z" fill="#ff1493"/><text x="60" y="20" fill="#fff" font-size="3" transform="rotate(270,50,50)">⌚ Watch</text>
-            <path d="M50,50 L6.7,25 A50,50 0 0,1 50,0 Z" fill="#222"/><text x="65" y="20" fill="#fff" font-size="3" transform="rotate(330,50,50)">10 Coin</text>
-        </svg>
+        <div class="wheel-box">
+            <svg class="wheel-svg" id="wheel" viewBox="0 0 100 100">
+                <path d="M50,50 L50,0 A50,50 0 0,1 93.3,25 Z" fill="#ff1493"/><text x="62" y="22" fill="#fff" font-size="3.5" font-weight="bold" transform="rotate(30,50,50)">5 Coin</text>
+                <path d="M50,50 L93.3,25 A50,50 0 0,1 93.3,75 Z" fill="#222"/><text x="60" y="22" fill="#00e5ff" font-size="3" font-weight="bold" transform="rotate(90,50,50)">Earphone</text>
+                <path d="M50,50 L93.3,75 A50,50 0 0,1 50,100 Z" fill="#ff1493"/><text x="60" y="22" fill="#ffd700" font-size="3" font-weight="bold" transform="rotate(150,50,50)">OG Glass</text>
+                <path d="M50,50 L50,100 A50,50 0 0,1 6.7,75 Z" fill="#222"/><text x="62" y="22" fill="#fff" font-size="3.5" font-weight="bold" transform="rotate(210,50,50)">20 Coin</text>
+                <path d="M50,50 L6.7,75 A50,50 0 0,1 6.7,25 Z" fill="#ff1493"/><text x="60" y="22" fill="#fff" font-size="3.5" font-weight="bold" transform="rotate(270,50,50)">Watch</text>
+                <path d="M50,50 L6.7,25 A50,50 0 0,1 50,0 Z" fill="#222"/><text x="62" y="22" fill="#fff" font-size="3.5" font-weight="bold" transform="rotate(330,50,50)">10 Coin</text>
+            </svg>
+        </div>
     </div>
     <button class="spin-btn" id="spinBtn" onclick="playSpin()">স্পিন করুন 🎲</button>
+    <p id="timerMsg" style="text-align:center; color:var(--gold); display:none; margin-top:10px;"></p>
+
+    <h3 style="color:var(--pink); border-left:4px solid var(--pink); padding-left:10px; margin-top:30px;">🛍️ স্টক লিস্ট</h3>
+    <div id="productList"></div>
 </div>
 
 <script>
+    const ADMIN_PASS = "Noman@31hridoy";
+    let userCoins = parseInt(localStorage.getItem('m_coins')) || 0;
+    let stock = JSON.parse(localStorage.getItem('m_stock_v3')) || [];
+
+    window.onload = function() {
+        document.getElementById('coinBalance').innerText = userCoins;
+        renderProducts();
+        checkCooldown();
+        setTimeout(() => { document.getElementById('studentPromo').style.display = 'flex'; }, 1500);
+    };
+
+    function closePromo() { document.getElementById('studentPromo').style.display = 'none'; }
+
+    function openAdmin() {
+        if(prompt("পাসওয়ার্ড দিন:") === ADMIN_PASS) {
+            document.getElementById('adminArea').style.display = 'block';
+        }
+    }
+
+    function checkCooldown() {
+        const lastSpin = localStorage.getItem('last_spin_time');
+        if (lastSpin && (Date.now() - lastSpin < 86400000)) {
+            const btn = document.getElementById('spinBtn');
+            btn.disabled = true;
+            btn.innerText = "আগামীকাল আবার খেলুন";
+            document.getElementById('timerMsg').style.display = 'block';
+            document.getElementById('timerMsg').innerText = "একবার খেলা হয়েছে, ২৪ ঘণ্টা পর আবার সুযোগ পাবেন।";
+        }
+    }
+
     function playSpin() {
-        const btn = document.getElementById('spinBtn');
         const wheel = document.getElementById('wheel');
+        const btn = document.getElementById('spinBtn');
         btn.disabled = true;
-        const rotate = 3600 + Math.floor(Math.random() * 3600);
-        wheel.style.transform = `rotate(${rotate}deg)`;
+
+        // 95% Coins, 5% Gifts Probability
+        const rand = Math.random();
+        let targetDeg;
+        if (rand < 0.95) {
+            const coinSectors = [30, 210, 330]; 
+            targetDeg = coinSectors[Math.floor(Math.random() * coinSectors.length)];
+        } else {
+            const giftSectors = [90, 150, 270]; 
+            targetDeg = giftSectors[Math.floor(Math.random() * giftSectors.length)];
+        }
+
+        const finalRotate = 3600 + (360 - targetDeg);
+        wheel.style.transform = `rotate(${finalRotate}deg)`;
+
         setTimeout(() => {
-            const actualDegree = rotate % 360;
-            let prize = (actualDegree >= 60 && actualDegree < 120) ? "Earphone" : (actualDegree >= 120 && actualDegree < 180) ? "OG Glass" : "Coins";
-            if(prize !== "Coins") {
-                confetti({particleCount: 200, spread: 70, origin: { y: 0.6 }});
-                alert(`🔥 অভিনন্দন! আপনি একটি ${prize} জিতেছেন!`);
-            } else { alert("আপনি কয়েন জিতেছেন!"); }
-            btn.disabled = false;
+            let winText = "";
+            if(targetDeg === 30) { userCoins += 5; winText = "৫ কয়েন"; }
+            else if(targetDeg === 90) winText = "১টি Earphone";
+            else if(targetDeg === 150) winText = "১টি OG Glass";
+            else if(targetDeg === 210) { userCoins += 20; winText = "২০ কয়েন"; }
+            else if(targetDeg === 270) winText = "১টি Smart Watch";
+            else if(targetDeg === 330) { userCoins += 10; winText = "১০ কয়েন"; }
+
+            localStorage.setItem('m_coins', userCoins);
+            document.getElementById('coinBalance').innerText = userCoins;
+            localStorage.setItem('last_spin_time', Date.now());
+            
+            confetti({particleCount: 150, spread: 70, origin: { y: 0.6 }});
+            alert("অভিনন্দন! আপনি জিতেছেন: " + winText);
+            checkCooldown();
         }, 4000);
+    }
+
+    function addProduct() {
+        const model = document.getElementById('model').value;
+        const price = document.getElementById('price').value;
+        const cat = document.getElementById('category').value;
+        const soldOut = document.getElementById('isSoldOut').checked;
+        if(!model || !price) return alert("তথ্য দিন");
+
+        stock.push({ id: Date.now(), model, price, cat, soldOut });
+        localStorage.setItem('m_stock_v3', JSON.stringify(stock));
+        renderProducts();
+        document.getElementById('model').value = "";
+        document.getElementById('price').value = "";
+        document.getElementById('isSoldOut').checked = false;
+    }
+
+    function deleteProduct(id) {
+        if(confirm("ডিলিট করবেন?")) {
+            stock = stock.filter(i => i.id !== id);
+            localStorage.setItem('m_stock_v3', JSON.stringify(stock));
+            renderProducts();
+        }
+    }
+
+    function renderProducts() {
+        const area = document.getElementById('productList');
+        area.innerHTML = stock.length === 0 ? "<p>স্টক খালি।</p>" : "";
+        stock.forEach(p => {
+            area.innerHTML += `
+                <div class="item-card ${p.soldOut ? 'sold-out-card' : ''}">
+                    <div>
+                        <b>${p.model}</b><br><small style="color:var(--blue)">${p.cat}</small><br>
+                        ${p.soldOut ? '<span class="sold-out-badge">SOLD OUT</span>' : ''}
+                    </div>
+                    <div style="text-align:right">
+                        <span class="price">৳${p.price}</span><br>
+                        <button class="del-btn" onclick="deleteProduct(${p.id})">🗑️</button>
+                    </div>
+                </div>`;
+        });
     }
 </script>
 </body>
