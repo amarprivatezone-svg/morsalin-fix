@@ -3,144 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Morsalin Fix - Mobile Parts Shop</title>
+    <title>Morsalin Fix - Official Store</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #e91e63; --dark: #121212; --card-bg: #ffffff; }
-        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f4f7f6; margin: 0; color: #333; }
+        :root { --red: #e91e63; --dark: #1a1a2e; --gray: #f4f4f4; }
+        body { font-family: 'Hind Siliguri', sans-serif; margin: 0; background: var(--gray); display: flex; flex-direction: column; height: 100vh; }
         
         /* Header & Search */
-        .top-header { background: #fff; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 22px; font-weight: 700; color: var(--primary); text-decoration: none; }
-        .search-container { padding: 10px; background: #fff; }
-        .search-box { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box; }
+        header { background: #fff; padding: 10px; border-bottom: 2px solid var(--red); position: sticky; top: 0; z-index: 100; }
+        .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .logo { font-size: 24px; font-weight: 900; color: var(--red); text-transform: uppercase; cursor: pointer; }
+        .search-bar { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 50px; outline: none; }
 
-        /* Banner Slider */
-        .banner { width: 100%; height: 180px; background: linear-gradient(45deg, #e91e63, #ff4081); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; text-align: center; padding: 20px; box-sizing: border-box; }
+        /* Main Content with Sidebar */
+        .main-container { display: flex; flex: 1; overflow: hidden; }
+        
+        /* Sidebar (Left side drawing) */
+        .sidebar { width: 90px; background: #fff; border-right: 1px solid #ddd; overflow-y: auto; padding: 10px 5px; }
+        .cat-item { padding: 12px 5px; text-align: center; border: 1px solid #eee; margin-bottom: 8px; border-radius: 10px; font-size: 11px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .cat-item.active { background: var(--red); color: #fff; border-color: var(--red); }
 
-        /* Categories */
-        .cat-section { padding: 15px; }
-        .brand-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
-        .brand-btn { background: #fff; border: 1px solid #ddd; padding: 10px 5px; border-radius: 5px; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; text-transform: uppercase; }
-        .brand-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        /* Product Area (Right side drawing) */
+        .product-area { flex: 1; overflow-y: auto; padding: 10px; }
+        .banner { width: 100%; height: 120px; background: var(--red); border-radius: 15px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; color: #fff; text-align: center; font-weight: bold; }
 
-        /* Product Grid */
-        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
-        .product-card { background: #fff; border-radius: 10px; padding: 10px; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: center; }
-        .discount-tag { position: absolute; top: 5px; left: 5px; background: red; color: #fff; padding: 2px 6px; border-radius: 50%; font-size: 10px; font-weight: bold; }
-        .product-img { width: 100%; height: 120px; object-fit: contain; margin-bottom: 10px; }
-        .product-title { font-size: 13px; font-weight: 600; margin: 5px 0; height: 36px; overflow: hidden; }
-        .price { color: var(--primary); font-size: 16px; font-weight: 700; }
-        .old-price { text-decoration: line-through; color: #888; font-size: 12px; margin-left: 5px; }
-        .buy-btn { width: 100%; background: var(--primary); color: #fff; border: none; padding: 8px; border-radius: 5px; margin-top: 10px; font-weight: bold; cursor: pointer; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+        .card { background: #fff; border-radius: 12px; padding: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative; }
+        .p-img { width: 100%; height: 100px; object-fit: contain; }
+        .p-name { font-size: 12px; font-weight: 600; margin: 8px 0; height: 34px; overflow: hidden; }
+        .price { color: var(--red); font-weight: bold; font-size: 15px; }
+        .old-price { text-decoration: line-through; color: #999; font-size: 11px; }
+        .buy-btn { width: 100%; background: var(--red); color: #fff; border: none; padding: 8px; border-radius: 5px; margin-top: 5px; font-weight: bold; cursor: pointer; font-size: 12px; }
 
-        /* Admin Section */
-        #adminArea { display: none; background: #fff; padding: 20px; margin: 15px; border-radius: 10px; border: 2px solid var(--primary); }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        /* Floating Live Chat Button */
+        .live-chat { position: fixed; bottom: 80px; right: 20px; background: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); text-decoration: none; z-index: 1000; flex-direction: column; }
+
+        /* Footer Address */
+        footer { background: #fff; padding: 10px; border-top: 1px solid #ddd; font-size: 12px; text-align: center; font-weight: bold; color: #555; }
+
+        /* Admin Box */
+        #adminPanel { display: none; position: fixed; top: 10%; left: 5%; width: 90%; background: #fff; z-index: 2000; padding: 20px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.3); box-sizing: border-box; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
-<div class="top-header">
-    <a href="#" class="logo" onclick="openAdmin()">Morsalin Fix</a>
-    <div>
-        <i class="fa fa-shopping-basket" style="font-size: 20px;"></i>
-        <span id="cartCount" style="background: red; color: #fff; padding: 2px 6px; border-radius: 50%; font-size: 10px;">0</span>
+<header>
+    <div class="top-row">
+        <div class="logo" onclick="toggleAdmin()">Morsalin Fix</div>
+        <div style="font-size: 20px;">🛒</div>
+    </div>
+    <input type="text" class="search-bar" placeholder="মডেল বা পার্টস খুঁজুন...">
+</header>
+
+<div class="main-container">
+    <div class="sidebar">
+        <div class="cat-item active">ALL</div>
+        <div class="cat-item">VIVO</div>
+        <div class="cat-item">OPPO</div>
+        <div class="cat-item">SAMSUNG</div>
+        <div class="cat-item">I-TEL</div>
+        <div class="cat-item">XIAOMI</div>
+        <div class="cat-item">INFINIX</div>
+        <div class="cat-item">REDMI</div>
+    </div>
+
+    <div class="product-area">
+        <div class="banner">
+            ৩০% মেগা ডিসকাউন্ট!<br>অরিজিনাল পার্টস এখন সস্তায়।
+        </div>
+        <div class="product-grid" id="productDisplay">
+            </div>
     </div>
 </div>
 
-<div class="search-container">
-    <input type="text" class="search-box" placeholder="আপনার পার্টস খুঁজুন (ডিসপ্লে, ব্যাটারি...)" onkeyup="searchProduct()">
-</div>
+<a href="https://wa.me/8801617511388" class="live-chat">
+    <span style="font-size: 20px;">💬</span>
+    <span>Live Chat</span>
+</a>
 
-<div class="banner">
-    <div>
-        <strong>৩০% মেগা ডিসকাউন্ট চলছে!</strong><br>
-        <small>অরিজিনাল মোবাইল পার্টসের বিশ্বস্ত দোকান</small>
-    </div>
-</div>
+<footer>
+    দত্তবাড়ি রোড, পিপুল বাড়িয়া বাজার, সিরাজগঞ্জ।
+</footer>
 
-<div class="cat-section">
-    <strong>স্মার্টফোন ব্র্যান্ড কালেকশন</strong>
-    <div class="brand-btns">
-        <div class="brand-btn active">ALL</div>
-        <div class="brand-btn">IPHONE</div>
-        <div class="brand-btn">SAMSUNG</div>
-        <div class="brand-btn">VIVO</div>
-    </div>
-</div>
-
-<div id="adminArea">
-    <h3>🛠️ প্রোডাক্ট যোগ করুন</h3>
-    <input type="text" id="pName" placeholder="মডেলের নাম (যেমন: Samsung A50)">
-    <input type="number" id="pPrice" placeholder="বর্তমান দাম">
-    <input type="number" id="pOldPrice" placeholder="পুরনো দাম (ঐচ্ছিক)">
-    <input type="text" id="pImg" placeholder="ছবির লিঙ্ক (Image URL)">
+<div id="adminPanel">
+    <h3>নতুন পার্টস যোগ করুন</h3>
+    <input type="text" id="pName" placeholder="মডেলের নাম (যেমন: Vivo Y20 LCD)">
+    <input type="number" id="pPrice" placeholder="নতুন মূল্য">
+    <input type="number" id="pOld" placeholder="পুরানো মূল্য (অফারের জন্য)">
+    <input type="text" id="pImg" placeholder="ছবির লিঙ্ক (Google থেকে)">
     <select id="pCat">
-        <option value="Display">Display</option>
-        <option value="Battery">Battery</option>
-        <option value="Backshell">Backshell</option>
+        <option value="ALL">Category</option>
+        <option value="VIVO">VIVO</option>
+        <option value="OPPO">OPPO</option>
+        <option value="SAMSUNG">SAMSUNG</option>
     </select>
-    <button class="buy-btn" onclick="saveProduct()">সেভ করুন ✅</button>
-    <button onclick="document.getElementById('adminArea').style.display='none'" style="width:100%; margin-top:10px; border:none; background:#eee; padding:10px;">বন্ধ করুন</button>
+    <button class="buy-btn" onclick="saveData()">সেভ করুন ✅</button>
+    <button onclick="document.getElementById('adminPanel').style.display='none'" style="width:100%; margin-top:10px; border:none; padding:10px;">বন্ধ করুন</button>
 </div>
-
-<div class="product-grid" id="productArea">
-    </div>
 
 <script>
-    const ADMIN_PASS = "Noman@31hridoy";
-    let products = JSON.parse(localStorage.getItem('m_fix_store')) || [];
+    const PASS = "Noman@31hridoy"; [cite: 2026-02-25]
+    let items = JSON.parse(localStorage.getItem('m_shop_vFinal')) || [];
 
-    window.onload = renderProducts;
+    window.onload = render;
 
-    function openAdmin() {
-        if(prompt("অ্যাডমিন পাসওয়ার্ড দিন:") === ADMIN_PASS) {
-            document.getElementById('adminArea').style.display = 'block';
+    function toggleAdmin() {
+        if(prompt("পাসওয়ার্ড দিন:") === PASS) {
+            document.getElementById('adminPanel').style.display = 'block';
         }
     }
 
-    function saveProduct() {
-        const name = document.getElementById('pName').value;
-        const price = document.getElementById('pPrice').value;
-        const oldPrice = document.getElementById('pOldPrice').value;
+    function saveData() {
+        const n = document.getElementById('pName').value;
+        const p = document.getElementById('pPrice').value;
+        const op = document.getElementById('pOld').value;
         const img = document.getElementById('pImg').value || "https://via.placeholder.com/150";
         const cat = document.getElementById('pCat').value;
 
-        if(!name || !price) return alert("তথ্য দিন!");
-
-        products.push({ id: Date.now(), name, price, oldPrice, img, cat });
-        localStorage.setItem('m_fix_store', JSON.stringify(products));
-        renderProducts();
-        document.getElementById('adminArea').style.display = 'none';
+        if(!n || !p) return alert("তথ্য দিন!");
+        items.push({id: Date.now(), n, p, op, img, cat});
+        localStorage.setItem('m_shop_vFinal', JSON.stringify(items));
+        render();
+        document.getElementById('adminPanel').style.display = 'none';
     }
 
-    function renderProducts() {
-        const area = document.getElementById('productArea');
-        area.innerHTML = "";
-        products.forEach(p => {
-            let discount = p.oldPrice ? Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100) : 0;
+    function render() {
+        const area = document.getElementById('productDisplay');
+        area.innerHTML = items.length === 0 ? "<p style='color:#777'>কোনো প্রোডাক্ট নেই</p>" : "";
+        items.forEach(i => {
             area.innerHTML += `
-                <div class="product-card">
-                    ${discount > 0 ? `<span class="discount-tag">-${discount}%</span>` : ''}
-                    <img src="${p.img}" class="product-img">
-                    <div class="product-title">${p.name} - ${p.cat}</div>
-                    <span class="price">৳${p.price}</span>
-                    ${p.oldPrice ? `<span class="old-price">৳${p.oldPrice}</span>` : ''}
-                    <button class="buy-btn" onclick="alert('WhatsApp-এ অর্ডার করতে ক্লিক করুন')">অর্ডার করুন</button>
-                    <button onclick="deleteProduct(${p.id})" style="border:none; color:red; background:none; font-size:12px; margin-top:5px;">মুছে ফেলুন</button>
+                <div class="card">
+                    <img src="${i.img}" class="p-img">
+                    <div class="p-name">${i.n}</div>
+                    <div>
+                        <span class="price">৳${i.p}</span>
+                        ${i.op ? `<span class="old-price">৳${i.op}</span>` : ''}
+                    </div>
+                    <button class="buy-btn" onclick="location.href='tel:01617511388'">অর্ডার করুন</button>
                 </div>
             `;
         });
-    }
-
-    function deleteProduct(id) {
-        if(confirm("মুছে ফেলবেন?")) {
-            products = products.filter(p => p.id !== id);
-            localStorage.setItem('m_fix_store', JSON.stringify(products));
-            renderProducts();
-        }
     }
 </script>
 
